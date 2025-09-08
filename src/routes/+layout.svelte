@@ -1,10 +1,20 @@
 <script lang="ts">
 	import '../app.css';
+	import { onMount } from 'svelte';
 	let menuOpen = false;
+	let screenWidth = 1024; // default to desktop
 	function toggleMenu() {
 		menuOpen = !menuOpen;
 	}
 	let { children } = $props();
+	onMount(() => {
+		screenWidth = window.innerWidth;
+		const handleResize = () => {
+			screenWidth = window.innerWidth;
+		};
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
+	});
 </script>
 
 <header class="bg-opacity-90 flex items-center justify-between bg-black px-6 py-4 shadow">
@@ -30,8 +40,8 @@
 		</button>
 		<ul
 			class="absolute top-12 right-0 flex flex-col gap-4 rounded bg-black px-8 py-4 text-lg text-white shadow-lg md:static md:flex-row md:items-center md:gap-8 md:bg-transparent md:px-0 md:py-0 md:text-base md:shadow-none"
-			class:hidden={!menuOpen && window.innerWidth < 768}
-			class:flex={menuOpen || window.innerWidth >= 768}
+			class:hidden={!menuOpen && screenWidth < 768}
+			class:flex={menuOpen || screenWidth >= 768}
 		>
 			<li><a href="/" class="hover:text-purple-400">Home</a></li>
 			<li><a href="#product" class="hover:text-purple-400">Product Photography</a></li>
